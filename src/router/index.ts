@@ -8,6 +8,7 @@ import Home from "../view/Home.vue";
 import Users from "../view/Users.vue";
 import Category from "../view/category/Category.vue";
 import Product from "../view/Products.vue";
+import Role from "../view/role/Role.vue";
 
 const routes = [
   {
@@ -44,6 +45,11 @@ const routes = [
         path: "products",
         name: "Product",
         component: Product,
+      },
+      {
+        path: "role",
+        name: "Role",
+        component: Role,
       },
     ],
   },
