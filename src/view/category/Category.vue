@@ -5,7 +5,6 @@ import CategoryModal from "../category/CategoryModal.vue";
 import Swal from "sweetalert2";
 
 const categories = ref<any[]>([]);
-
 const form = ref({
   id: null,
   name: "",
@@ -18,7 +17,7 @@ const isEdit = ref(false);
 const getCategory = async () => {
   try {
     const res = await request("categories", "GET");
-    categories.value = res;
+    categories.value = res.data;
   } catch (error) {
     console.log(error);
   }
@@ -49,12 +48,17 @@ const editCategory = (item: any) => {
 const saveCategory = async () => {
   try {
     if (isEdit.value) {
+      if (!form.value.id) {
+        throw new Error("Category ID is missing");
+      }
+
       await request(`categories/${form.value.id}`, "PUT", form.value);
     } else {
       await request("categories", "POST", form.value);
     }
 
-    getCategory();
+    await getCategory();
+
     Swal.fire({
       title: "Success!",
       text: isEdit.value
@@ -73,6 +77,11 @@ const saveCategory = async () => {
   }
 };
 const deleteCategory = async (id: number) => {
+  if (!id) {
+    console.log("Invalid ID:", id);
+    return;
+  }
+
   const result = await Swal.fire({
     title: "Delete Category?",
     text: "You won't be able to revert this!",
@@ -94,13 +103,13 @@ const deleteCategory = async (id: number) => {
         icon: "success",
       });
     } catch (error) {
+      console.log(error);
+
       Swal.fire({
         title: "Error!",
         text: "Delete failed.",
         icon: "error",
       });
-
-      console.log(error);
     }
   }
 };

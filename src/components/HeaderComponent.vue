@@ -1,3 +1,35 @@
+<script setup lang="ts">
+import { ref, onMounted } from "vue";
+import {
+  getProfile,
+  getAccessToken,
+  setAccessToken,
+  setProfile,
+} from "../store/profile.stroe";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
+
+const profile = ref<any>(null);
+const token = ref<string | null>(null);
+
+onMounted(() => {
+  profile.value = getProfile();
+  token.value = getAccessToken();
+
+  // 🔥 if empty → redirect to login
+  if (!token.value || !profile.value) {
+    router.replace("/login");
+  }
+});
+
+const handleLogout = () => {
+  setAccessToken("");
+  setProfile(null);
+  router.replace("/login");
+};
+</script>
+
 <template>
   <header class="topbar d-flex align-items-center justify-content-between px-3">
     <!-- LEFT: Search -->
@@ -37,8 +69,8 @@
           <div class="avatar">JD</div>
 
           <div class="d-flex flex-column">
-            <span class="user-name">Jane Doe</span>
-            <span class="user-role">Admin</span>
+            <span class="user-name">{{ profile?.name }}</span>
+            <span class="user-role">{{ profile?.role_name }}</span>
           </div>
 
           <i class="bi bi-chevron-down small"></i>
@@ -48,7 +80,11 @@
           <li><a class="dropdown-item" href="#">Profile</a></li>
           <li><a class="dropdown-item" href="#">Settings</a></li>
           <li><hr class="dropdown-divider" /></li>
-          <li><a class="dropdown-item text-danger" href="#">Logout</a></li>
+          <li>
+            <a class="dropdown-item text-danger" @click="handleLogout"
+              >Logout</a
+            >
+          </li>
         </ul>
       </div>
     </div>

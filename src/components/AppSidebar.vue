@@ -8,21 +8,27 @@
       collapsed ? 'sidebar-collapsed' : 'sidebar-expanded',
     ]"
   >
-    <div class="sidebar-header d-flex align-items-center justify-content-between px-3 py-3">
+    <div
+      class="sidebar-header d-flex align-items-center justify-content-between px-3 py-3"
+    >
       <div class="d-flex align-items-center gap-2 overflow-hidden">
         <i class="bi bi-hexagon-fill text-primary fs-5 flex-shrink-0"></i>
-        <span v-if="!collapsed" class="logo-text text-white fw-semibold text-nowrap">
-          Nexus
+        <span
+          v-if="!collapsed"
+          class="logo-text text-white fw-semibold text-nowrap"
+        >
+          Mega
         </span>
       </div>
-
       <button
         class="toggle-btn"
         type="button"
         @click="collapsed = !collapsed"
         :title="collapsed ? 'Expand' : 'Collapse'"
       >
-        <i :class="['bi', collapsed ? 'bi-chevron-right' : 'bi-chevron-left']"></i>
+        <i
+          :class="['bi', collapsed ? 'bi-chevron-right' : 'bi-chevron-left']"
+        ></i>
       </button>
     </div>
 
@@ -47,12 +53,19 @@
 
     <div class="sidebar-footer px-3 py-3">
       <div class="d-flex align-items-center gap-2 overflow-hidden">
-        <div class="avatar d-flex align-items-center justify-content-center flex-shrink-0">
+        <div
+          class="avatar d-flex align-items-center justify-content-center flex-shrink-0"
+        >
           JD
         </div>
-        <div v-if="!collapsed" class="d-flex flex-column overflow-hidden flex-grow-1">
-          <span class="text-white fw-medium text-nowrap user-name">Jane Doe</span>
-          <span class="user-role text-nowrap">Admin</span>
+        <div
+          v-if="!collapsed"
+          class="d-flex flex-column overflow-hidden flex-grow-1"
+        >
+          <span class="text-white fw-medium text-nowrap user-name">{{
+            profile?.name
+          }}</span>
+          <span class="user-role text-nowrap">{{ profile?.role_name }}</span>
         </div>
       </div>
     </div>
@@ -61,7 +74,10 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
+import { getProfile } from "../store/profile.stroe";
+const profile = ref<any>(null);
 
+profile.value = getProfile();
 interface NavItem {
   name: string;
   path: string;
