@@ -144,14 +144,14 @@ const navItems: NavItem[] = [
     name: "Customer",
     path: "/customer",
     icon: "bi-person-lines-fill",
-    children: [{ name: "List Customer", path: "/products/all" }],
+    children: [{ name: "List Customer", path: "/customers" }],
   },
   {
     name: "Products",
     path: "/products",
     icon: "bi-box-seam",
     children: [
-      { name: "List Products", path: "/products/all" },
+      { name: "List Products", path: "/products" },
       { name: "Categories", path: "/categories" },
     ],
   },
@@ -166,12 +166,12 @@ const navItems: NavItem[] = [
   },
   {
     name: "Puchears",
-    path: "/products",
+    path: "/puchears",
     icon: "bi-bag-check",
     children: [
-      { name: "Supplier", path: "supplier" },
+      { name: "Supplier", path: "/suppliers" },
       { name: "List Puchears", path: "/puchears" },
-      { name: "Puchear Product", path: "puchears" },
+      { name: "Puchear Product", path: "/puchears" },
     ],
   },
   {
@@ -189,7 +189,7 @@ const navItems: NavItem[] = [
     icon: "bi-people",
     children: [
       { name: "All Users", path: "/users" },
-      { name: "Users Permissions", path: "/users/roles" },
+      { name: "Users Permissions", path: "/user-permission" },
       { name: "Users Roles", path: "/role" },
     ],
   },
