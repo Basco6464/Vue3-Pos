@@ -118,7 +118,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useRoute } from "vue-router";
-import { getProfile } from "../store/profile.stroe";
+import { getProfile } from "../store/profile.store";
 
 const route = useRoute();
 

@@ -1,6 +1,6 @@
 import axios from "axios";
 import { config } from "./config";
-import { getAccessToken } from "../store/profile.stroe";
+import { getAccessToken } from "../store/profile.store";
 export const request = async (
   url?: string,
   method?: "GET" | "POST" | "PUT" | "DELETE",

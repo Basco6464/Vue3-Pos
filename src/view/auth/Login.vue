@@ -2,7 +2,7 @@
 import { ref } from "vue";
 import { request } from "../../utill/api";
 import { useRouter } from "vue-router";
-import { setAccessToken, setProfile } from "../../store/profile.stroe";
+import { setAccessToken, setProfile } from "../../store/profile.store";
 const showPassword = ref(false);
 const form = ref({
   username: "",

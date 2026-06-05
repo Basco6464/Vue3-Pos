@@ -17,6 +17,14 @@
 <script setup lang="ts">
 import AppSidebar from "../components/AppSidebar.vue";
 import Header from "../components/HeaderComponent.vue";
+import { onMounted } from "vue";
+import { useConfigStore } from "../store/config.store.ts";
+
+const configStore = useConfigStore();
+
+onMounted(() => {
+  configStore.fetchConfig();
+});
 </script>
 
 <style scoped>

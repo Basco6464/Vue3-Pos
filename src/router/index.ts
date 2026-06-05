@@ -42,11 +42,6 @@ const routes = [
         component: Category,
       },
       {
-        path: "products",
-        name: "Product",
-        component: Product,
-      },
-      {
         path: "role",
         name: "Role",
         component: Role,
@@ -64,7 +59,7 @@ const routes = [
       {
         path: "/products",
         name: "Product",
-        component: () => import("../view/Products.vue"),
+        component: () => import("../view/product/Product.vue"),
       },
       {
         path: "/customers",

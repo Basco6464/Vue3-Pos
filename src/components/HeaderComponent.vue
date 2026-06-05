@@ -5,7 +5,7 @@ import {
   getAccessToken,
   setAccessToken,
   setProfile,
-} from "../store/profile.stroe";
+} from "../store/profile.store";
 import { useRouter } from "vue-router";
 
 const router = useRouter();

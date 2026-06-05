@@ -5,5 +5,8 @@ import router from "./router/index.ts";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
+import { createPinia } from "pinia";
 
-createApp(App).use(router).mount("#app");
+const pinia = createPinia();
+
+createApp(App).use(pinia).use(router).mount("#app");
