@@ -176,11 +176,11 @@ const navItems: NavItem[] = [
   },
   {
     name: "Expanses",
-    path: "/expanses",
+    path: "/expenses",
     icon: "bi-wallet2",
     children: [
-      { name: "Expanses type", path: "expanses" },
-      { name: "Expanses", path: "/expanses" },
+      { name: "Expenses type", path: "expense-type" },
+      { name: "Expenses", path: "/expenses" },
     ],
   },
   {

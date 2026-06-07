@@ -6,6 +6,7 @@ export const useConfigStore = defineStore("config", () => {
   const categories = ref<any[]>([]);
   const suppliers = ref<any[]>([]);
   const brands = ref<any[]>([]);
+  const expenses_type = ref<any[]>([]);
 
   const loading = ref(false);
 
@@ -22,6 +23,7 @@ export const useConfigStore = defineStore("config", () => {
       categories.value = res.data.category;
       suppliers.value = res.data.supplier;
       brands.value = res.data.brands;
+      expenses_type.value = res.data.expenses_type;
     } catch (error) {
       console.error(error);
     } finally {
@@ -36,5 +38,6 @@ export const useConfigStore = defineStore("config", () => {
     loading,
     fetchConfig,
     brands,
+    expenses_type,
   };
 });

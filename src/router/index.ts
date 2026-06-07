@@ -7,7 +7,6 @@ import Login from "../view/auth/Login.vue";
 import Home from "../view/Home.vue";
 import Users from "../view/user/Users.vue";
 import Category from "../view/category/Category.vue";
-import Product from "../view/Products.vue";
 import Role from "../view/role/Role.vue";
 
 const routes = [
@@ -64,12 +63,22 @@ const routes = [
       {
         path: "/customers",
         name: "Customer",
-        component: () => import("../view/Customer.vue"),
+        component: () => import("../view/customer/Customer.vue"),
       },
       {
         path: "/suppliers",
         name: "Supplier",
         component: () => import("../view/Supplier/Supplier.vue"),
+      },
+      {
+        path: "/expense-type",
+        name: "Expense_type",
+        component: () => import("../view/expense/ExpensesType.vue"),
+      },
+      {
+        path: "/expenses",
+        name: "Expense",
+        component: () => import("../view/expense/Expenses.vue"),
       },
     ],
   },

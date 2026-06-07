@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { useConfigStore } from "../../store/config.store";
-import { ref } from "vue";
 const configStore = useConfigStore();
-
 const props = defineProps<{
   form: {
     id: number | null;
