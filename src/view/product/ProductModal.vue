@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import { useConfigStore } from "../../store/config.store";
 import { ref } from "vue";
-
 const configStore = useConfigStore();
 
 const props = defineProps<{
   form: {
     id: number | null;
-    category_id: number | null;
+    category_id: null;
     brand: string;
     name: string;
     description: string;
@@ -16,6 +15,7 @@ const props = defineProps<{
     discount: number;
     status: boolean;
     image: string;
+    imageFile: File | null;
   };
   isEdit: boolean;
   categories: { id: number; name: string }[];
@@ -23,38 +23,27 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (e: "save", file: File | null): void;
+  (e: "save"): void; // ✅ no args — file is in form.imageFile
 }>();
 
-const imageFile = ref<File | null>(null);
-
-/**
- * Handle image upload + preview
- */
 const onImageChange = (event: Event) => {
   const target = event.target as HTMLInputElement;
-
   if (!target.files || !target.files[0]) return;
 
   const file = target.files[0];
-  imageFile.value = file;
+  props.form.imageFile = file; // ✅ store file in form directly
 
   const reader = new FileReader();
   reader.onload = (e) => {
     if (e.target?.result) {
-      // preview image only
-      props.form.image = e.target.result as string;
+      props.form.image = e.target.result as string; // preview only
     }
   };
-
   reader.readAsDataURL(file);
 };
 
-/**
- * Save handler
- */
 const onSave = () => {
-  emit("save", imageFile.value);
+  emit("save"); // ✅ simple emit, no args
 };
 </script>
 
@@ -62,12 +51,10 @@ const onSave = () => {
   <div class="modal fade" id="productModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
-        <!-- HEADER -->
         <div class="modal-header">
           <h5 class="modal-title">
             {{ props.isEdit ? "Update Product" : "Add Product" }}
           </h5>
-
           <button
             type="button"
             class="btn-close"
@@ -75,7 +62,6 @@ const onSave = () => {
           ></button>
         </div>
 
-        <!-- BODY -->
         <div class="modal-body">
           <!-- Name -->
           <div class="mb-3">
@@ -124,31 +110,36 @@ const onSave = () => {
           </div>
 
           <!-- Category -->
-          <select
-            v-model.number="props.form.category_id"
-            class="form-select mb-3"
-          >
-            <option :value="null">Select Category</option>
-            <option
-              v-for="category in configStore.categories"
-              :key="category.id"
-              :value="category.id"
-            >
-              {{ category.name }}
-            </option>
-          </select>
+          <div class="mb-3">
+            <label class="form-label">Category</label>
 
-          <!-- Brand -->
-          <select class="form-select">
-            <option value="">Select Brand</option>
-            <option
-              v-for="brand in configStore.brands"
-              :key="brand.id"
-              :value="brand.id"
-            >
-              {{ brand.name }}
-            </option>
-          </select>
+            <select v-model.number="props.form.category_id" class="form-select">
+              <option :value="null" disabled>Select Category</option>
+
+              <option
+                v-for="category in categories"
+                :key="category.id"
+                :value="category.id"
+              >
+                {{ category.name }}
+              </option>
+            </select>
+          </div>
+
+          <!-- Brand ✅ fixed: added v-model -->
+          <div class="mb-3">
+            <label class="form-label">Brand</label>
+            <select v-model="props.form.brand" class="form-select">
+              <option value="" disabled>Select Brand</option>
+              <option
+                v-for="brand in configStore.brands"
+                :key="brand.id"
+                :value="brand.name"
+              >
+                {{ brand.name }}
+              </option>
+            </select>
+          </div>
 
           <!-- Status -->
           <div class="form-check mb-3">
@@ -161,17 +152,15 @@ const onSave = () => {
             <label for="status" class="form-check-label">Active</label>
           </div>
 
-          <!-- IMAGE UPLOAD -->
+          <!-- Image -->
           <div class="mb-3">
             <label class="form-label">Image</label>
-
             <input
               type="file"
               class="form-control"
               accept="image/*"
               @change="onImageChange"
             />
-
             <img
               v-if="props.form.image"
               :src="props.form.image"
@@ -181,7 +170,6 @@ const onSave = () => {
           </div>
         </div>
 
-        <!-- FOOTER -->
         <div class="modal-footer">
           <button
             type="button"
@@ -190,7 +178,6 @@ const onSave = () => {
           >
             Close
           </button>
-
           <button class="btn btn-primary" @click="onSave">
             {{ props.isEdit ? "Update" : "Save" }}
           </button>

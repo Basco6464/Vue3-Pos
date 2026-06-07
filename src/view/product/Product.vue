@@ -4,8 +4,9 @@ import { useConfigStore } from "../../store/config.store";
 import ProductModal from "./ProductModal.vue";
 import { request } from "../../utill/api.ts";
 import { onMounted } from "vue";
-
+import Swal from "sweetalert2";
 const configStore = useConfigStore();
+// http://localhost:3000
 
 const form = ref({
   id: null,
@@ -17,10 +18,13 @@ const form = ref({
   price: 0,
   discount: 0,
   status: true,
-  image: "",
+  image: "" as string,
+  imageFile: null as File | null, // ✅ file lives here
 });
 
 const products = ref<any[]>([]);
+const categorys = ref<any[]>([]);
+
 const isEdit = ref(false);
 
 const resetForm = () => {
@@ -35,16 +39,27 @@ const resetForm = () => {
     discount: 0,
     status: true,
     image: "",
+    imageFile: null,
   };
 };
+
 const getListProduct = async () => {
   try {
     const res = await request("products", "GET");
-    products.value = res.products;
+    products.value = res.product;
   } catch (error) {
     console.error(error);
   }
 };
+const getListCategory = async () => {
+  try {
+    const res = await request("categories", "GET");
+    categorys.value = res.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 const openAddModal = () => {
   isEdit.value = false;
   resetForm();
@@ -59,31 +74,95 @@ const editProduct = (item: any) => {
     brand: item.brand,
     name: item.name,
     description: item.description,
-    qty: item.qty,
-    price: item.price,
-    discount: item.discount,
+    qty: Number(item.qty),
+    price: Number(item.price),
+    discount: Number(item.discount),
     status: item.status,
     image: item.image || "",
+    imageFile: null,
   };
 };
 
 const saveProduct = async () => {
   try {
-    if (isEdit.value) {
-      console.log("Update", form.value);
-    } else {
-      console.log("Create", form.value);
+    const formData = new FormData();
+
+    formData.append("category_id", String(form.value.category_id));
+    formData.append("brand", form.value.brand);
+    formData.append("name", form.value.name);
+    formData.append("description", form.value.description);
+    formData.append("qty", String(form.value.qty));
+    formData.append("price", String(form.value.price));
+    formData.append("discount", String(form.value.discount));
+    formData.append("status", String(form.value.status));
+    if (form.value.imageFile) {
+      formData.append("image", form.value.imageFile);
     }
+
+    if (isEdit.value) {
+      await request(`products/${form.value.id}`, "PUT", formData);
+    } else {
+      await request("products", "POST", formData);
+    }
+
+    await getListProduct();
+    Swal.fire({
+      title: "Success!",
+      text: isEdit.value
+        ? "User updated successfully."
+        : "User created successfully.",
+      icon: "success",
+    });
+
+    const closeBtn = document.querySelector(
+      '[data-bs-dismiss="modal"]',
+    ) as HTMLElement;
+
+    closeBtn?.click();
   } catch (error) {
     console.error(error);
   }
 };
 
 const deleteProduct = async (id: number) => {
-  console.log("Delete", id);
+  if (!id) {
+    console.log("Invalid ID:", id);
+    return;
+  }
+
+  const result = await Swal.fire({
+    title: "Delete Product?",
+    text: "You won't be able to revert this!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes, delete it!",
+    cancelButtonText: "Cancel",
+  });
+
+  try {
+    if (result.isConfirmed) {
+      await request(`products/${id}`, "DELETE");
+
+      await getListProduct();
+      Swal.fire({
+        title: "Deleted!",
+        text: "User deleted successfully.",
+        icon: "success",
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    Swal.fire({
+      title: "Error!",
+      text: "Delete failed.",
+      icon: "error",
+    });
+  }
 };
+
 onMounted(() => {
   getListProduct();
+  getListCategory();
 });
 </script>
 
@@ -124,7 +203,7 @@ onMounted(() => {
       </button>
     </div>
 
-    <table class="table table-hover">
+    <table class="table table-hover align-middle">
       <thead>
         <tr>
           <th>#</th>
@@ -135,6 +214,7 @@ onMounted(() => {
           <th>Price</th>
           <th>Discount</th>
           <th>Description</th>
+          <th>Image</th>
           <th>Status</th>
           <th width="180">Action</th>
         </tr>
@@ -145,25 +225,26 @@ onMounted(() => {
           <td>{{ index + 1 }}</td>
 
           <td>{{ item.name }}</td>
-
-          <!-- category -->
-          <td>
-            {{ item.category_name }}
-          </td>
-
-          <!-- brand -->
-          <td>
-            {{ item.brand }}
-          </td>
-
+          <td>{{ item.category_name }}</td>
+          <td>{{ item.brand }}</td>
           <td>{{ item.qty }}</td>
-
           <td>${{ item.price }}</td>
-
           <td>{{ item.discount }}%</td>
-
           <td>{{ item.description }}</td>
-
+          <td>
+            <img
+              v-if="item.image"
+              :src="`https://res.cloudinary.com/dw0yp7muh/image/upload/${item.image}`"
+              alt="product"
+              style="
+                width: 50px;
+                height: 50px;
+                object-fit: cover;
+                border-radius: 6px;
+              "
+            />
+            <span v-else class="text-muted">—</span>
+          </td>
           <td>
             <span :class="item.status ? 'badge bg-success' : 'badge bg-danger'">
               {{ item.status ? "Active" : "Inactive" }}
@@ -179,7 +260,6 @@ onMounted(() => {
             >
               Edit
             </button>
-
             <button
               class="btn btn-sm btn-danger"
               @click="deleteProduct(item.id)"

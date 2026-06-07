@@ -8,13 +8,18 @@ export const request = async (
 ) => {
   const access_token = getAccessToken();
   try {
+    const isFormData = data instanceof FormData;
     const res = await axios({
       url: config.base_url + url,
       method: method,
       data: data,
       headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + access_token,
+        Authorization: `Bearer ${access_token}`,
+        ...(isFormData
+          ? { "Content-Type": "multipart/form-data" }
+          : {
+              "Content-Type": "application/json",
+            }),
       },
     });
 
