@@ -5,8 +5,8 @@ import ProductModal from "./ProductModal.vue";
 import { request } from "../../utill/api.ts";
 import { onMounted } from "vue";
 import Swal from "sweetalert2";
+import { isPermission } from "../../utill/helper.ts";
 const configStore = useConfigStore();
-// http://localhost:3000
 
 const form = ref({
   id: null,
@@ -19,7 +19,7 @@ const form = ref({
   discount: 0,
   status: true,
   image: "" as string,
-  imageFile: null as File | null, // ✅ file lives here
+  imageFile: null as File | null,
 });
 
 const products = ref<any[]>([]);
@@ -194,6 +194,7 @@ onMounted(() => {
       </div>
 
       <button
+        v-if="isPermission('products.create')"
         class="btn btn-primary"
         data-bs-toggle="modal"
         data-bs-target="#productModal"
@@ -253,6 +254,7 @@ onMounted(() => {
 
           <td>
             <button
+              v-if="isPermission('products.update')"
               class="btn btn-sm btn-primary me-2"
               data-bs-toggle="modal"
               data-bs-target="#productModal"
@@ -261,6 +263,7 @@ onMounted(() => {
               Edit
             </button>
             <button
+              v-if="isPermission('products.delete')"
               class="btn btn-sm btn-danger"
               @click="deleteProduct(item.id)"
             >

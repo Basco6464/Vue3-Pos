@@ -2,7 +2,11 @@
 import { ref } from "vue";
 import { request } from "../../utill/api";
 import { useRouter } from "vue-router";
-import { setAccessToken, setProfile } from "../../store/profile.store";
+import {
+  setAccessToken,
+  setProfile,
+  setPermission,
+} from "../../store/profile.store";
 const showPassword = ref(false);
 const form = ref({
   username: "",
@@ -18,9 +22,12 @@ const handleLogin = async () => {
 
     const res = await request("auth/login", "POST", payload);
 
+    console.log(res);
+
     if (res && !res.error) {
       setAccessToken(res.access_token);
       setProfile(JSON.stringify(res.data));
+      setPermission(JSON.stringify(res.permission));
 
       router.push("/");
     } else {

@@ -3,6 +3,7 @@ import { request } from "../../utill/api";
 import { ref, onMounted } from "vue";
 import CustomerModal from "../customer/CustomerModal.vue";
 import Swal from "sweetalert2";
+import { isPermission } from "../../utill/helper.ts";
 
 const customers = ref<any[]>([]);
 const form = ref({
@@ -113,9 +114,10 @@ onMounted(() => {
 <template>
   <div>
     <div class="d-flex justify-content-between align-items-center mb-3">
-      <h1>List Suppliers {{ customers.length }}</h1>
+      <h1>List Customer {{ customers.length }}</h1>
 
       <button
+        v-if="isPermission('customer.create')"
         class="btn btn-primary"
         data-bs-toggle="modal"
         data-bs-target="#customerModal"
@@ -150,6 +152,7 @@ onMounted(() => {
 
           <td>
             <button
+              v-if="isPermission('customer.update')"
               class="btn btn-sm btn-primary me-2"
               data-bs-toggle="modal"
               data-bs-target="#customerModal"
@@ -159,6 +162,7 @@ onMounted(() => {
             </button>
 
             <button
+              v-if="isPermission('customer.delete')"
               class="btn btn-sm btn-danger"
               @click="deleteCustomer(item.id)"
             >

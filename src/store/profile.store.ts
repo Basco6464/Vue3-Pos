@@ -20,3 +20,19 @@ export const getProfile = () => {
     return null;
   }
 };
+
+export const setPermission = (value: any) => {
+  localStorage.setItem("permission", value);
+};
+
+export const getPermission = () => {
+  try {
+    const permission = localStorage.getItem("permission");
+    if (permission != "" && permission !== null && permission !== undefined) {
+      return JSON.parse(permission);
+    }
+    return null;
+  } catch (error) {
+    return null;
+  }
+};

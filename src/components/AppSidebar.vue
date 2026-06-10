@@ -1,4 +1,128 @@
+<script setup lang="ts">
+import { ref, onMounted } from "vue";
+import { useRoute } from "vue-router";
+import { getProfile, getPermission } from "../store/profile.store";
+
+const route = useRoute();
+
+const collapsed = ref(false);
+const profile = ref<any>(getProfile() || {});
+
+interface ChildItem {
+  name: string;
+  path: string;
+}
+
+interface NavItem {
+  name: string;
+  path: string;
+  icon: string;
+  children?: ChildItem[];
+}
+
+const navItems: NavItem[] = [
+  { name: "Dashboard", path: "/", icon: "bi-house-door" },
+  // { name: "POS", path: "/pos", icon: "bi-display" },
+  {
+    name: "Customer",
+    path: "/customers",
+    icon: "bi-person-lines-fill",
+    children: [
+      { name: "List Customer", path: "/customers" }, // ✅ matches "customer.get_list"
+    ],
+  },
+  {
+    name: "Products",
+    path: "/products",
+    icon: "bi-box-seam",
+    children: [
+      { name: "List Products", path: "/products" }, // ✅ matches "products.get_list"
+      { name: "Categories", path: "/categories" }, // ✅ matches "categories.get_list"
+    ],
+  },
+  {
+    name: "Purchases",
+    path: "/purchases",
+    icon: "bi-bag-check",
+    children: [
+      { name: "Supplier", path: "/suppliers" }, // ✅ matches "suppliers.get_list"
+      { name: "List Purchases", path: "/purchases" }, // ⚠️ not in API yet
+      { name: "Purchase Product", path: "/purchase-product" }, // ⚠️ not in API yet
+    ],
+  },
+  {
+    name: "Expenses",
+    path: "/expenses",
+    icon: "bi-wallet2",
+    children: [
+      { name: "Expense Type", path: "/expense-type" }, // ⚠️ not in API yet
+      { name: "Expenses", path: "/expenses" }, // ✅ matches "expenses.get_list"
+    ],
+  },
+  {
+    name: "Users",
+    path: "/users",
+    icon: "bi-people",
+    children: [
+      { name: "All Users", path: "/users" }, // ✅ matches "users.get_list"
+      { name: "Users Permissions", path: "/permission-role" }, // ⚠️ not in API yet
+      { name: "Users Roles", path: "/role" }, // ✅ matches "role.get_list"
+    ],
+  },
+  {
+    name: "Setting",
+    path: "/setting",
+    icon: "bi-gear",
+    children: [
+      { name: "Language", path: "/setting/language" }, // ⚠️ not in API yet
+      { name: "Currency", path: "/setting/currency" }, // ⚠️ not in API yet
+    ],
+  },
+];
+const openMenus = ref<string[]>([]);
+
+const isOpen = (name: string) => {
+  return openMenus.value.includes(name);
+};
+
+const toggleSubmenu = (name: string) => {
+  if (isOpen(name)) {
+    openMenus.value = openMenus.value.filter((m) => m !== name);
+  } else {
+    openMenus.value.push(name);
+  }
+};
+
+const isParentActive = (item: NavItem) => {
+  return (
+    item.children?.some((child) => route.path.startsWith(child.path)) || false
+  );
+};
+const permissions = getPermission();
+const item_menu = ref();
+
+const getMenuById = () => {
+  const new_item_menu: NavItem[] = [];
+
+  navItems?.forEach((item1) => {
+    const p1 = permissions?.findIndex(
+      (data1: { web_route_key: string; is_menu_web: boolean }) =>
+        data1.web_route_key === item1.path,
+    );
+    if (p1 !== -1) {
+      new_item_menu.push(item1);
+    }
+  });
+
+  item_menu.value = new_item_menu;
+};
+onMounted(() => {
+  getMenuById();
+});
+</script>
+
 <template>
+  <div></div>
   <aside
     :class="[
       'sidebar',
@@ -36,7 +160,7 @@
         Menu
       </p>
 
-      <div v-for="item in navItems" :key="item.name" class="nav-group">
+      <div v-for="item in item_menu" :key="item.name" class="nav-group">
         <!-- Normal Menu -->
         <router-link
           v-if="!item.children"
@@ -114,116 +238,6 @@
     </div>
   </aside>
 </template>
-
-<script setup lang="ts">
-import { ref } from "vue";
-import { useRoute } from "vue-router";
-import { getProfile } from "../store/profile.store";
-
-const route = useRoute();
-
-const collapsed = ref(false);
-const profile = ref<any>(getProfile() || {});
-
-interface ChildItem {
-  name: string;
-  path: string;
-}
-
-interface NavItem {
-  name: string;
-  path: string;
-  icon: string;
-  children?: ChildItem[];
-}
-
-const navItems: NavItem[] = [
-  { name: "Home", path: "/", icon: "bi-house-door" },
-  { name: "POS", path: "/pos", icon: "bi-display" },
-  {
-    name: "Customer",
-    path: "/customer",
-    icon: "bi-person-lines-fill",
-    children: [{ name: "List Customer", path: "/customers" }],
-  },
-  {
-    name: "Products",
-    path: "/products",
-    icon: "bi-box-seam",
-    children: [
-      { name: "List Products", path: "/products" },
-      { name: "Categories", path: "/categories" },
-    ],
-  },
-  {
-    name: "Employee",
-    path: "/employee",
-    icon: "bi-person-badge",
-    children: [
-      { name: "List Employee", path: "/Employee/all" },
-      { name: "Payroll", path: "/payroll" },
-    ],
-  },
-  {
-    name: "Puchears",
-    path: "/puchears",
-    icon: "bi-bag-check",
-    children: [
-      { name: "Supplier", path: "/suppliers" },
-      { name: "List Puchears", path: "/puchears" },
-      { name: "Puchear Product", path: "/puchears" },
-    ],
-  },
-  {
-    name: "Expanses",
-    path: "/expenses",
-    icon: "bi-wallet2",
-    children: [
-      { name: "Expenses type", path: "expense-type" },
-      { name: "Expenses", path: "/expenses" },
-    ],
-  },
-  {
-    name: "Users",
-    path: "/users",
-    icon: "bi-people",
-    children: [
-      { name: "All Users", path: "/users" },
-      { name: "Users Permissions", path: "/user-permission" },
-      { name: "Users Roles", path: "/role" },
-    ],
-  },
-  {
-    name: "Setting",
-    path: "/setting",
-    icon: "bi-gear",
-    children: [
-      { name: "Language", path: "setting" },
-      { name: "Currency", path: "setting" },
-    ],
-  },
-];
-
-const openMenus = ref<string[]>([]);
-
-const isOpen = (name: string) => {
-  return openMenus.value.includes(name);
-};
-
-const toggleSubmenu = (name: string) => {
-  if (isOpen(name)) {
-    openMenus.value = openMenus.value.filter((m) => m !== name);
-  } else {
-    openMenus.value.push(name);
-  }
-};
-
-const isParentActive = (item: NavItem) => {
-  return (
-    item.children?.some((child) => route.path.startsWith(child.path)) || false
-  );
-};
-</script>
 
 <style scoped>
 .sidebar {

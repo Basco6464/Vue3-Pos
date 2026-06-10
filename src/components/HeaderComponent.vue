@@ -16,8 +16,6 @@ const token = ref<string | null>(null);
 onMounted(() => {
   profile.value = getProfile();
   token.value = getAccessToken();
-
-  // 🔥 if empty → redirect to login
   if (!token.value || !profile.value) {
     router.replace("/login");
   }

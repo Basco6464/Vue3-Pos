@@ -22,26 +22,26 @@ const routes = [
   },
 
   {
-    path: "/",
+    path: "/Main",
     component: MainLayout,
     children: [
       {
-        path: "",
-        name: "Home",
+        path: "/",
+        name: "Dashboard",
         component: Home,
       },
       {
-        path: "users",
+        path: "/users",
         name: "Users",
         component: Users,
       },
       {
-        path: "categories",
+        path: "/categories",
         name: "Category",
         component: Category,
       },
       {
-        path: "role",
+        path: "/role",
         name: "Role",
         component: Role,
       },
@@ -51,7 +51,7 @@ const routes = [
         component: () => import("../view/POS.vue"),
       },
       {
-        path: "/user-permission",
+        path: "/permission-role",
         name: "UserPermission",
         component: () => import("../view/user/UserPermission.vue"),
       },
@@ -79,6 +79,11 @@ const routes = [
         path: "/expenses",
         name: "Expense",
         component: () => import("../view/expense/Expenses.vue"),
+      },
+      {
+        path: "/employees",
+        name: "Emlpoyee",
+        component: () => import("../view/employees/Employees.vue"),
       },
     ],
   },
