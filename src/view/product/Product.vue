@@ -5,7 +5,8 @@ import ProductModal from "./ProductModal.vue";
 import { request } from "../../utill/api.ts";
 import { onMounted } from "vue";
 import Swal from "sweetalert2";
-import { isPermission } from "../../utill/helper.ts";
+import { usePermission } from "../../composble/userPermission.ts";
+const { isPermission } = usePermission();
 const configStore = useConfigStore();
 
 const form = ref({

@@ -7,11 +7,11 @@ export const useConfigStore = defineStore("config", () => {
   const suppliers = ref<any[]>([]);
   const brands = ref<any[]>([]);
   const expenses_type = ref<any[]>([]);
+  const permission = ref<any[]>([]);
 
   const loading = ref(false);
 
   const fetchConfig = async () => {
-    // Prevent duplicate requests
     if (roles.value.length > 0) return;
 
     try {
@@ -24,6 +24,7 @@ export const useConfigStore = defineStore("config", () => {
       suppliers.value = res.data.supplier;
       brands.value = res.data.brands;
       expenses_type.value = res.data.expenses_type;
+      permission.value = res.data.permissioin;
     } catch (error) {
       console.error(error);
     } finally {
@@ -39,5 +40,6 @@ export const useConfigStore = defineStore("config", () => {
     fetchConfig,
     brands,
     expenses_type,
+    permission,
   };
 });

@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { useConfigStore } from "../../store/config.store";
-const configStore = useConfigStore();
 const props = defineProps<{
   form: {
     id: number | null;
@@ -21,7 +19,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (e: "save"): void; // ✅ no args — file is in form.imageFile
+  (e: "save"): void;
 }>();
 
 const onImageChange = (event: Event) => {
@@ -130,7 +128,7 @@ const onSave = () => {
             <select v-model="props.form.brand" class="form-select">
               <option value="" disabled>Select Brand</option>
               <option
-                v-for="brand in configStore.brands"
+                v-for="brand in brands"
                 :key="brand.id"
                 :value="brand.name"
               >

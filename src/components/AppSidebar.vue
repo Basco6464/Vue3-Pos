@@ -1,11 +1,17 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import { useRoute } from "vue-router";
 import { getProfile, getPermission } from "../store/profile.store";
 
 const route = useRoute();
 
-const collapsed = ref(false);
+const collapsed = ref(
+  JSON.parse(localStorage.getItem("sidebar-collapsed") || "false"),
+);
+
+watch(collapsed, (val: boolean) => {
+  localStorage.setItem("sidebar-collapsed", JSON.stringify(val));
+});
 const profile = ref<any>(getProfile() || {});
 
 interface ChildItem {
@@ -68,6 +74,12 @@ const navItems: NavItem[] = [
       { name: "Users Permissions", path: "/permission-role" }, // ⚠️ not in API yet
       { name: "Users Roles", path: "/role" }, // ✅ matches "role.get_list"
     ],
+  },
+  {
+    name: "Emplyees",
+    path: "/employees",
+    icon: "bi-people",
+    children: [{ name: "All Emplyees", path: "/employees" }],
   },
   {
     name: "Setting",

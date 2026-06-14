@@ -1,12 +1,8 @@
 <template>
   <div class="layout">
-    <!-- Sidebar -->
     <AppSidebar />
-
-    <!-- Main -->
     <div class="main">
       <Header />
-
       <main class="content">
         <router-view />
       </main>

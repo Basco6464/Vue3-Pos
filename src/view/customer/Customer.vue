@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { request } from "../../utill/api";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import CustomerModal from "../customer/CustomerModal.vue";
 import Swal from "sweetalert2";
-import { isPermission } from "../../utill/helper.ts";
+import { usePermission } from "../../composble/userPermission.ts";
+const { isPermission } = usePermission();
 
 const customers = ref<any[]>([]);
 const form = ref({
@@ -13,6 +14,12 @@ const form = ref({
   address: "",
   email: "",
   type: "",
+});
+const customersUpperCase = computed(() => {
+  return customers.value.map((customer) => ({
+    ...customer,
+    name: customer.name?.toUpperCase() || "",
+  }));
 });
 const isEdit = ref(false);
 const getListCustomer = async () => {
@@ -121,7 +128,7 @@ onMounted(() => {
         class="btn btn-primary"
         data-bs-toggle="modal"
         data-bs-target="#customerModal"
-        @click="openAddModal"
+        @click.stop="openAddModal"
       >
         Add New
       </button>
@@ -141,9 +148,8 @@ onMounted(() => {
       </thead>
 
       <tbody>
-        <tr v-for="(item, index) in customers" :key="item.id">
+        <tr v-for="(item, index) in customersUpperCase" :key="item.id">
           <td>{{ index + 1 }}</td>
-
           <td>{{ item.name }}</td>
           <td>{{ item.address }}</td>
           <td>{{ item.tel }}</td>
@@ -156,7 +162,7 @@ onMounted(() => {
               class="btn btn-sm btn-primary me-2"
               data-bs-toggle="modal"
               data-bs-target="#customerModal"
-              @click="editSupplier(item)"
+              @click.stop="editSupplier(item)"
             >
               Edit
             </button>
@@ -164,7 +170,7 @@ onMounted(() => {
             <button
               v-if="isPermission('customer.delete')"
               class="btn btn-sm btn-danger"
-              @click="deleteCustomer(item.id)"
+              @click.stop="deleteCustomer(item.id)"
             >
               Delete
             </button>

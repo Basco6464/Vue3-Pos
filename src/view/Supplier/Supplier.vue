@@ -125,9 +125,7 @@ onMounted(() => {
       <tbody>
         <tr v-for="(item, index) in suppliers" :key="item.id">
           <td>{{ index + 1 }}</td>
-
           <td>{{ item.name }}</td>
-
           <td>{{ item.code }}</td>
           <td>{{ item.address }}</td>
           <td>{{ item.tel }}</td>

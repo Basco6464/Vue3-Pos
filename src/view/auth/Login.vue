@@ -59,7 +59,7 @@ const handleLogin = async () => {
         </div>
 
         <!-- Form -->
-        <form>
+        <form @submit.prevent="handleLogin">
           <!-- Username -->
           <div class="mb-3">
             <label for="username" class="form-label fw-medium">Username</label>
@@ -161,13 +161,7 @@ const handleLogin = async () => {
           </div>
 
           <!-- Submit -->
-          <button
-            type="button"
-            class="btn btn-primary w-100"
-            @click="handleLogin()"
-          >
-            Sign In
-          </button>
+          <button type="submit" class="btn btn-primary w-100">Sign In</button>
         </form>
 
         <!-- Sign up -->

@@ -1,3 +1,3 @@
 <template>
-  <h1>User Permission</h1>
+  <h1>Permission</h1>
 </template>
